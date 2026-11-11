@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reyne Mae Lausa — Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      /* Core palette */
+      --orange:      #FF6B2B;
+      --amber:       #FFAA44;
+      --crimson:     #C93B1A;
+      --orange-dim:  rgba(255,107,43,0.10);
+      --orange-glow: rgba(255,107,43,0.30);
+      --amber-glow:  rgba(255,170,68,0.18);
+
+      /* Backgrounds */
+      --bg:    #070707;
+      --bg2:   #0e0e0e;
+      --card:  #121212;
+      --card2: #161616;
+
+      /* Borders */
+      --border:    rgba(255,107,43,0.12);
+      --border-hi: rgba(255,107,43,0.50);
+
+      /* Text */
+      --text:  #EDE8E3;
+      --muted: #7A7067;
+      --white: #FFFFFF;
+
+      /* Serif font */
+      --serif: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--amber),var(--crimson)); border-radius:10px; }
+
+    /* ══════════════════════════════════
+       BACKGROUND — mesh + radial layers
+    ══════════════════════════════════ */
+    .bg-canvas {
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      overflow:hidden;
+    }
+
+    /* large warm radial at top-left */
+    .bg-canvas::before {
+      content:'';
+      position:absolute;
+      width:900px; height:900px;
+      top:-300px; left:-300px;
+      background: radial-gradient(circle, rgba(201,59,26,0.18) 0%, rgba(255,107,43,0.08) 40%, transparent 70%);
+      animation: orbDrift1 18s ease-in-out infinite alternate;
+    }
+    /* amber orb bottom-right */
+    .bg-canvas::after {
+      content:'';
+      position:absolute;
+      width:700px; height:700px;
+      bottom:-200px; right:-200px;
+      background: radial-gradient(circle, rgba(255,170,68,0.14) 0%, rgba(255,107,43,0.06) 45%, transparent 70%);
+      animation: orbDrift2 22s ease-in-out infinite alternate;
+    }
+
+    .bg-mid {
+      position:absolute;
+      width:500px; height:500px;
+      top:40%; left:45%;
+      transform:translate(-50%,-50%);
+      background: radial-gradient(circle, rgba(255,107,43,0.06) 0%, transparent 65%);
+      animation: orbDrift3 15s ease-in-out infinite alternate;
+    }
+
+    /* subtle grid lines */
+    .bg-grid {
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(255,107,43,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,43,0.035) 1px, transparent 1px);
+      background-size:60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+
+    /* vignette */
+    .bg-vignette {
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 100% 100% at 50% 0%, transparent 50%, rgba(4,2,2,0.85) 100%);
+    }
+
+    @keyframes orbDrift1 {
+      from { transform:translate(0,0) scale(1); }
+      to   { transform:translate(60px,80px) scale(1.12); }
+    }
+    @keyframes orbDrift2 {
+      from { transform:translate(0,0) scale(1); }
+      to   { transform:translate(-50px,-70px) scale(1.08); }
+    }
+    @keyframes orbDrift3 {
+      from { transform:translate(-50%,-50%) scale(1); }
+      to   { transform:translate(-50%,-50%) scale(1.3); }
+    }
+
+    /* ══════════════════════════════════  NAVBAR  */
+    nav {
+      width:100%; position:fixed; top:0; left:0;
+      padding:16px 8%;
+      display:flex; justify-content:space-between; align-items:center;
+      background:rgba(7,7,7,0.82);
+      backdrop-filter:blur(28px);
+      z-index:1000;
+      border-bottom:1px solid var(--border);
+    }
+    .logo {
+      font-family:var(--serif);
+      font-size:1.5rem; font-weight:700;
+      letter-spacing:2px; color:var(--white);
+      font-style:italic;
+    }
+    .logo em { color:var(--orange); font-style:normal; }
+    nav ul { display:flex; gap:34px; list-style:none; }
+    nav ul li a {
+      text-decoration:none; color:var(--muted);
+      font-size:0.83rem; font-weight:500;
+      letter-spacing:0.5px; transition:color 0.25s;
+    }
+    nav ul li a:hover { color:var(--amber); }
+
+    /* ══════════════════════════════════  SECTIONS  */
+    section {
+      min-height:100vh;
+      padding:130px 8% 90px;
+      position:relative; z-index:1;
+    }
+
+    /* ══════════════════════════════════  HERO  */
+    .hero {
+      display:grid; grid-template-columns:1fr 1fr;
+      align-items:center; gap:60px; min-height:100vh;
+    }
+
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--orange-dim);
+      border:1px solid rgba(255,107,43,0.28);
+      border-radius:100px; padding:6px 16px;
+      font-size:0.73rem; color:var(--amber);
+      letter-spacing:2.5px; text-transform:uppercase;
+      margin-bottom:20px; font-weight:500;
+    }
+    .eyebrow-dot {
+      width:6px; height:6px;
+      background:var(--amber); border-radius:50%;
+      animation:pulse 2s infinite;
+      box-shadow:0 0 6px var(--amber);
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+
+    /* greeting line */
+    .hero-text h1 {
+      font-family:var(--serif);
+      font-size:2.6rem; font-weight:600;
+      font-style:italic; line-height:1.15;
+      margin-bottom:0; color:var(--text);
+    }
+
+    /* NAME — Bebas Neue, big & glowing */
+    .hero-text h1 .name {
+      font-family:'Bebas Neue', sans-serif;
+      font-style:normal; font-weight:400;
+      font-size:7rem; display:block;
+      line-height:0.88; letter-spacing:5px;
+      background: linear-gradient(135deg, var(--amber) 0%, var(--orange) 45%, var(--crimson) 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:nameGlow 4s ease-in-out infinite alternate;
+      margin-bottom:22px;
+    }
+    @keyframes nameGlow {
+      from { filter:drop-shadow(0 0 10px rgba(255,107,43,0.45)) drop-shadow(0 0 30px rgba(255,107,43,0.2)); }
+      to   { filter:drop-shadow(0 0 22px rgba(255,170,68,0.75)) drop-shadow(0 0 60px rgba(255,107,43,0.35)); }
+    }
+
+    .hero-text p {
+      color:var(--muted); line-height:1.88;
+      margin-bottom:34px; max-width:430px; font-size:0.94rem;
+    }
+    .hero-btns { display:flex; gap:14px; }
+
+    .btn {
+      padding:13px 28px; border-radius:8px; border:none;
+      cursor:pointer; font-family:'DM Sans',sans-serif;
+      font-weight:600; font-size:0.87rem;
+      transition:all 0.3s; letter-spacing:0.3px;
+    }
+    .btn-primary {
+      background:linear-gradient(135deg, var(--amber), var(--orange), var(--crimson));
+      background-size:200% 200%; background-position:0% 50%;
+      color:#fff;
+      box-shadow:0 4px 24px rgba(255,107,43,0.4);
+    }
+    .btn-primary:hover {
+      background-position:100% 50%;
+      transform:translateY(-3px);
+      box-shadow:0 10px 36px rgba(255,107,43,0.6);
+    }
+    .btn-ghost {
+      background:transparent;
+      border:1.5px solid rgba(255,107,43,0.3);
+      color:var(--text);
+    }
+    .btn-ghost:hover {
+      border-color:var(--amber);
+      color:var(--amber);
+      background:var(--orange-dim);
+      transform:translateY(-3px);
+    }
+
+    /* IMAGE FRAME */
+    .hero-image { display:flex; justify-content:center; align-items:center; position:relative; }
+    .image-frame {
+      width:365px; height:415px;
+      border-radius:24px; overflow:hidden; position:relative;
+      border:1px solid rgba(255,107,43,0.2);
+      box-shadow:0 0 50px rgba(255,107,43,0.12), 0 0 100px rgba(201,59,26,0.08);
+      transition:all 0.4s; cursor:pointer;
+    }
+    .image-frame:hover {
+      border-color:rgba(255,170,68,0.45);
+      box-shadow:0 0 80px rgba(255,170,68,0.25), 0 0 140px rgba(255,107,43,0.15);
+    }
+    .image-frame img { width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s; }
+    .image-frame:hover img { transform:scale(1.04); }
+
+    .corner {
+      position:absolute; width:22px; height:22px;
+      border-style:solid; z-index:2;
+      border-color:var(--amber);
+    }
+    .corner-tl { top:-1px;left:-1px; border-width:3px 0 0 3px; border-radius:6px 0 0 0; }
+    .corner-tr { top:-1px;right:-1px; border-width:3px 3px 0 0; border-radius:0 6px 0 0; }
+    .corner-bl { bottom:-1px;left:-1px; border-width:0 0 3px 3px; border-radius:0 0 0 6px; }
+    .corner-br { bottom:-1px;right:-1px; border-width:0 3px 3px 0; border-radius:0 0 6px 0; }
+
+    .stat-chip {
+      position:absolute;
+      background:var(--card);
+      border:1px solid rgba(255,107,43,0.18);
+      border-radius:12px; padding:12px 18px;
+      backdrop-filter:blur(10px);
+    }
+    .stat-chip .val {
+      font-family:'Syne',sans-serif; font-size:1.3rem;
+      font-weight:700; display:block;
+      background:linear-gradient(135deg,var(--amber),var(--orange));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .stat-chip .lbl { color:var(--muted); font-size:0.7rem; }
+    .chip-1 { left:-68px; top:40px; }
+    .chip-2 { right:-68px; bottom:80px; }
+
+    /* ══════════════════════════════════  SECTION HEADERS  */
+    .section-label {
+      display:inline-block; font-size:0.7rem;
+      letter-spacing:3.5px; text-transform:uppercase;
+      color:var(--amber); margin-bottom:8px; font-weight:600;
+    }
+    .section-title {
+      font-family:var(--serif);
+      font-size:3rem; font-weight:700;
+      font-style:italic;
+      color:var(--white); margin-bottom:14px; line-height:1.05;
+    }
+    .section-divider {
+      width:56px; height:2px;
+      background:linear-gradient(90deg, var(--amber), var(--orange), var(--crimson));
+      border-radius:10px; margin-bottom:54px;
+    }
+
+    /* ══════════════════════════════════  ABOUT  */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .about-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px; padding:30px;
+      transition:all 0.35s; position:relative; overflow:hidden;
+    }
+    .about-card::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg, rgba(255,170,68,0.04) 0%, rgba(255,107,43,0.02) 50%, transparent 100%);
+      opacity:0; transition:opacity 0.35s;
+    }
+    .about-card::after {
+      content:''; position:absolute; bottom:0;left:0;right:0; height:1.5px;
+      background:linear-gradient(90deg, var(--amber), var(--orange), var(--crimson));
+      transform:scaleX(0); transform-origin:left; transition:transform 0.4s;
+    }
+    .about-card:hover { border-color:rgba(255,170,68,0.25); transform:translateY(-6px); box-shadow:0 16px 48px rgba(0,0,0,0.55); }
+    .about-card:hover::before { opacity:1; }
+    .about-card:hover::after  { transform:scaleX(1); }
+    .card-icon {
+      width:40px; height:40px;
+      background:var(--orange-dim);
+      border:1px solid rgba(255,107,43,0.2);
+      border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; margin-bottom:14px;
+    }
+    .about-card h3 {
+      font-family:var(--serif);
+      font-size:1.15rem; font-weight:700;
+      font-style:italic; color:var(--white); margin-bottom:10px;
+    }
+    .about-card p { color:var(--muted); line-height:1.88; font-size:0.88rem; }
+
+    /* ══════════════════════════════════  PROJECTS  */
+    .project-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:20px;
+    }
+    .project-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px; overflow:hidden;
+      transition:all 0.4s; cursor:pointer; position:relative;
+    }
+    .project-card::before {
+      content:''; position:absolute; inset:0; z-index:0;
+      background:linear-gradient(160deg, rgba(255,170,68,0.04) 0%, rgba(255,107,43,0.02) 50%, transparent 100%);
+      opacity:0; transition:opacity 0.4s;
+    }
+    .project-card:hover {
+      border-color:rgba(255,170,68,0.35);
+      transform:translateY(-10px);
+      box-shadow:0 24px 56px rgba(0,0,0,0.65), 0 0 40px rgba(255,107,43,0.1);
+    }
+    .project-card:hover::before { opacity:1; }
+
+    .project-thumb {
+      height:200px; overflow:hidden; position:relative;
+      background:linear-gradient(135deg,#181818,#0a0a0a);
+      z-index:1;
+    }
+    .project-thumb img {
+      width:100%;height:100%;object-fit:cover;display:block;
+      transition:transform 0.55s;
+    }
+    .project-card:hover .project-thumb img { transform:scale(1.07); }
+
+    /* video */
+    .project-thumb video { width:100%;height:100%;object-fit:cover;display:block; }
+    .video-overlay {
+      position:absolute;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(4,2,2,0.52); transition:background 0.3s;
+    }
+    .project-card:hover .video-overlay { background:rgba(4,2,2,0.2); }
+    .play-icon {
+      width:54px;height:54px;
+      background:linear-gradient(135deg,var(--amber),var(--orange),var(--crimson));
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 28px rgba(255,107,43,0.55);
+      transition:transform 0.3s;
+    }
+    .project-card:hover .play-icon { transform:scale(1.15); }
+    .play-icon::after {
+      content:'';
+      border-style:solid;
+      border-width:10px 0 10px 18px;
+      border-color:transparent transparent transparent white;
+      margin-left:4px;
+    }
+
+    .project-badge {
+      position:absolute; top:12px; right:12px;
+      background:rgba(7,7,7,0.85);
+      border:1px solid rgba(255,107,43,0.2);
+      border-radius:100px; padding:4px 12px;
+      font-size:0.68rem; color:var(--amber);
+      backdrop-filter:blur(10px); font-weight:600;
+      letter-spacing:0.5px;
+    }
+    .project-body { padding:20px 22px; position:relative; z-index:1; }
+    .project-body h3 {
+      font-family:var(--serif);
+      font-size:1.15rem; font-weight:700;
+      font-style:italic; color:var(--white); margin-bottom:6px;
+    }
+    .project-body p { color:var(--muted); line-height:1.75; font-size:0.84rem; }
+
+    /* ══════════════════════════════════  LIGHTBOX  */
+    .lightbox {
+      display:none; position:fixed; inset:0;
+      background:rgba(4,2,2,0.96);
+      z-index:9999; align-items:center; justify-content:center;
+      backdrop-filter:blur(16px);
+    }
+    .lightbox.open { display:flex; animation:fadeIn 0.2s ease; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .lightbox-inner {
+      position:relative; max-width:90vw; max-height:90vh;
+      border-radius:16px; overflow:hidden;
+      border:1px solid rgba(255,107,43,0.2);
+      box-shadow:0 0 80px rgba(255,107,43,0.2), 0 0 160px rgba(201,59,26,0.1);
+    }
+    .lightbox-inner img  { display:block; max-width:90vw; max-height:85vh; object-fit:contain; }
+    .lightbox-inner video{ display:block; max-width:90vw; max-height:85vh; outline:none; }
+
+    .lb-close {
+      position:fixed; top:22px; right:28px;
+      width:42px; height:42px;
+      background:var(--card); border:1px solid rgba(255,107,43,0.2);
+      border-radius:50%; color:var(--text); font-size:1.2rem;
+      cursor:pointer; display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s; z-index:10000;
+    }
+    .lb-close:hover { background:var(--orange); color:#fff; border-color:var(--orange); }
+    .lb-caption {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:var(--card); border:1px solid rgba(255,107,43,0.18);
+      border-radius:100px; padding:8px 24px;
+      font-size:0.8rem; color:var(--text); white-space:nowrap;
+      font-family:var(--serif); font-style:italic;
+    }
+
+    /* ══════════════════════════════════  SKILLS  */
+    .skills-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+      gap:16px;
+    }
+    .skill-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px; padding:26px; transition:all 0.35s;
+      position:relative; overflow:hidden;
+    }
+    .skill-card::after {
+      content:''; position:absolute; top:0;left:0;right:0; height:1.5px;
+      background:linear-gradient(90deg, var(--amber), var(--orange), var(--crimson));
+      transform:scaleX(0); transform-origin:left; transition:transform 0.4s;
+    }
+    .skill-card:hover { border-color:rgba(255,170,68,0.25); transform:translateY(-6px); box-shadow:0 12px 36px rgba(0,0,0,0.5); }
+    .skill-card:hover::after { transform:scaleX(1); }
+
+    .skill-card h3 {
+      font-family:var(--serif);
+      font-size:1.05rem; font-weight:700; font-style:italic;
+      margin-bottom:14px;
+      background:linear-gradient(90deg, var(--amber), var(--orange));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .tags { display:flex; flex-wrap:wrap; gap:9px; }
+    .tag {
+      padding:6px 15px; border-radius:100px;
+      border:1px solid rgba(255,107,43,0.18); color:var(--muted);
+      font-size:0.79rem; transition:all 0.25s;
+    }
+    .tag:hover {
+      border-color:var(--amber); color:var(--amber);
+      background:var(--orange-dim);
+    }
+
+    /* ══════════════════════════════════  TIMELINE  */
+    .timeline-wrap { position:relative; padding-left:36px; }
+    .timeline-line {
+      position:absolute; left:7px;top:0;bottom:0; width:1.5px;
+      background:linear-gradient(to bottom, var(--amber), var(--orange), var(--crimson), transparent);
+    }
+    .timeline-item { margin-bottom:40px; position:relative; }
+    .timeline-dot {
+      position:absolute; left:-33px; top:18px;
+      width:14px; height:14px;
+      background:linear-gradient(135deg, var(--amber), var(--crimson));
+      border-radius:50%;
+      box-shadow:0 0 18px rgba(255,107,43,0.7);
+      border:2px solid var(--bg);
+    }
+    .timeline-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px; padding:22px 26px; transition:all 0.3s;
+    }
+    .timeline-card:hover { border-color:rgba(255,170,68,0.28); box-shadow:0 10px 32px rgba(0,0,0,0.5); }
+    .timeline-year {
+      font-size:0.68rem; color:var(--amber);
+      font-weight:600; letter-spacing:2.5px;
+      text-transform:uppercase; margin-bottom:5px;
+    }
+    .timeline-card h3 {
+      font-family:var(--serif);
+      font-size:1.15rem; font-weight:700;
+      font-style:italic; color:var(--white); margin-bottom:7px;
+    }
+    .timeline-card p { color:var(--muted); font-size:0.86rem; line-height:1.78; }
+
+    /* ══════════════════════════════════  FOOTER  */
+    footer {
+      text-align:center; padding:28px 8%;
+      border-top:1px solid var(--border);
+      color:var(--muted); font-size:0.82rem;
+    }
+    footer em {
+      font-family:var(--serif); font-style:italic;
+      background:linear-gradient(90deg,var(--amber),var(--orange));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+
+    /* ══════════════════════════════════  RESPONSIVE  */
+    @media(max-width:900px){
+      .hero { grid-template-columns:1fr; text-align:center; }
+      .hero-text p { margin:0 auto 34px; }
+      .hero-btns { justify-content:center; }
+      .hero-image { order:-1; }
+      .image-frame { width:285px; height:325px; }
+      .chip-1,.chip-2 { display:none; }
+      .about-grid { grid-template-columns:1fr; }
+      nav ul { gap:16px; }
+      .section-title { font-size:2.4rem; }
+    }
+    @media(max-width:600px){
+      .hero-text h1 { font-size:2rem; }
+      .hero-text h1 .name { font-size:4.5rem; }
+      nav ul { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ BACKGROUND ══ -->
+  <div class="bg-canvas">
+    <div class="bg-grid"></div>
+    <div class="bg-mid"></div>
+    <div class="bg-vignette"></div>
+  </div>
+
+  <!-- ══ LIGHTBOX ══ -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lb-close" onclick="closeLightbox(null,true)">✕</button>
+    <div class="lightbox-inner" id="lbInner"></div>
+    <div class="lb-caption" id="lbCaption"></div>
+  </div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav>
+    <div class="logo">Reyne<em>.</em></div>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#achievements">Achievements</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HOME ══ -->
+  <section class="hero" id="home">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Available for opportunities
+      </div>
+      <h1>
+        Hello, I'm
+        <span class="name">Reyne Mae</span>
+      </h1>
+      <p>A passionate 21-year-old aspiring IT professional and web developer. I believe in the power of good design — creating digital experiences that are both beautiful and meaningful.</p>
+      <div class="hero-btns">
+        <a href="#projects"><button class="btn btn-primary">View Projects</button></a>
+        <a href="#about"><button class="btn btn-ghost">About Me</button></a>
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <div class="image-frame" onclick="openImgLightbox('./reyneLausa.jpg','Reyne Mae Lausa')">
+        <span class="corner corner-tl"></span>
+        <span class="corner corner-tr"></span>
+        <span class="corner corner-bl"></span>
+        <span class="corner corner-br"></span>
+        <img src="./reyneLausa.jpg" alt="Reyne Mae Lausa">
+      </div>
+      <div class="stat-chip chip-1">
+        <span class="val">10+</span>
+        <span class="lbl">Projects Built</span>
+      </div>
+      <div class="stat-chip chip-2">
+        <span class="val">IT</span>
+        <span class="lbl">Student @ STI</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ══ -->
+  <section id="about">
+    <div class="section-label">Who I Am</div>
+    <h2 class="section-title">About Me</h2>
+    <div class="section-divider"></div>
+    <div class="about-grid">
+
+      <div class="about-card">
+        <div class="card-icon">👤</div>
+        <h3>Who Am I?</h3>
+        <p>Hi, I'm Reyne Mae Lausa — an aspiring Information Technology professional with a passion for technology, innovation, and problem-solving. I enjoy creating digital solutions that make processes more efficient and user-friendly. As someone who is constantly learning and adapting, I am committed to improving my technical skills while exploring new opportunities in software and web development.</p>
+      </div>
+
+      <div class="about-card">
+        <div class="card-icon">🎯</div>
+        <h3>My Mission</h3>
+        <p>My mission is to leverage technology to create meaningful and impactful solutions that address real-world challenges. I strive to continuously grow as a developer, embrace lifelong learning, and contribute to projects that improve user experiences and deliver value to individuals, businesses, and communities.</p>
+      </div>
+
+      <div class="about-card">
+        <div class="card-icon">💼</div>
+        <h3>Experience</h3>
+        <p>Throughout my academic and project-based journey, I have gained experience in web development, database management, system analysis, and user interface design. I have worked on developing applications, collaborating with team members, and applying problem-solving skills to create efficient and functional systems. Each project has strengthened my technical expertise and reinforced the importance of teamwork, adaptability, and continuous improvement.</p>
+      </div>
+
+      <div class="about-card">
+        <div class="card-icon">✨</div>
+        <h3>Hobbies</h3>
+        <p>Beyond technology, I enjoy exploring emerging tech trends, learning new skills, and working on personal projects that challenge my creativity. In my free time, I also enjoy reading, gaming, watching movies and series, and spending quality time with friends and family. These activities help me stay inspired and approach challenges with a fresh perspective.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ PROJECTS ══ -->
+  <section id="projects">
+    <div class="section-label">What I've Built</div>
+    <h2 class="section-title">Projects &amp; Works</h2>
+    <div class="section-divider"></div>
+    <div class="project-grid">
+
+      <div class="project-card" onclick="openImgLightbox('./project1.png','3D Design I — Blender')">
+        <div class="project-thumb">
+          <img src="./project1.png" alt="3D Design 1">
+          <span class="project-badge">Blender</span>
+        </div>
+        <div class="project-body">
+          <h3>3D Design I</h3>
+          <p>A 3D design created using Blender, exploring basic modelling, lighting, and rendering techniques.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project2.png','3D Design II — Blender')">
+        <div class="project-thumb">
+          <img src="./project2.png" alt="3D Design 2">
+          <span class="project-badge">Blender</span>
+        </div>
+        <div class="project-body">
+          <h3>3D Design II</h3>
+          <p>A second Blender project pushing further into material shading and scene composition.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project3.png','3D Design III — Blender')">
+        <div class="project-thumb">
+          <img src="./project3.png" alt="3D Design 3">
+          <span class="project-badge">Blender</span>
+        </div>
+        <div class="project-body">
+          <h3>3D Design III</h3>
+          <p>Third 3D work built in Blender, showcasing continued growth in spatial design and rendering.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project4.jpg','Anime Fan Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./project4.jpg" alt="Anime Poster">
+          <span class="project-badge">Canva</span>
+        </div>
+        <div class="project-body">
+          <h3>Anime Fan Poster</h3>
+          <p>A vibrant fan-made anime poster crafted in Canva, celebrating a favourite series with bold visuals and typography.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project5.png','Personal Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./project5.png" alt="Personal Poster">
+          <span class="project-badge">Canva</span>
+        </div>
+        <div class="project-body">
+          <h3>Personal Poster</h3>
+          <p>A personalised poster design that reflects individual identity and aesthetic sensibility, made using Canva.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project6.png','7-Eleven Promotional Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./project6.png" alt="7-Eleven Poster">
+          <span class="project-badge">Canva</span>
+        </div>
+        <div class="project-body">
+          <h3>7-Eleven Promotional Poster</h3>
+          <p>A brand-inspired promotional poster for 7-Eleven, designed in Canva with a focus on commercial aesthetics and clarity.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project7.png','Tired — Life Reflection Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./project7.png" alt="Tiredness Poster">
+          <span class="project-badge">Canva</span>
+        </div>
+        <div class="project-body">
+          <h3>"Tired" — Life Reflection Poster</h3>
+          <p>A conceptual poster about tiredness and life's deeper meaning, using visual metaphor and minimalist design to evoke emotion.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project8.png','Save the Turtles — Advocacy Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./project8.png" alt="Save the Turtles Poster">
+          <span class="project-badge">Canva</span>
+        </div>
+        <div class="project-body">
+          <h3>Save the Turtles — Advocacy Poster</h3>
+          <p>An environmental awareness poster promoting sea turtle conservation, designed with Canva to inspire action and urgency.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openVideoLightbox('./project9.mp4','Android App — Match Up Game')">
+        <div class="project-thumb">
+          <video muted preload="metadata" style="pointer-events:none;">
+            <source src="./project9.mp4" type="video/mp4">
+          </video>
+          <div class="video-overlay"><div class="play-icon"></div></div>
+          <span class="project-badge">Android Studio</span>
+        </div>
+        <div class="project-body">
+          <h3>Android App — Match Up Game</h3>
+          <p>A beginner-level mobile matching game built with Android Studio and Java, showcasing creativity and fundamentals of mobile development.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openVideoLightbox('./project10.mp4','C# Desktop Application — Visual Studio 2022')">
+        <div class="project-thumb">
+          <video muted preload="metadata" style="pointer-events:none;">
+            <source src="./project10.mp4" type="video/mp4">
+          </video>
+          <div class="video-overlay"><div class="play-icon"></div></div>
+          <span class="project-badge">Visual Studio</span>
+        </div>
+        <div class="project-body">
+          <h3>C# Desktop Application</h3>
+          <p>A software project developed in Visual Studio 2022 using C#, demonstrating fundamentals of desktop application development.</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openImgLightbox('./project8.png','Save the Turtles — Advocacy Poster — Canva')">
+        <div class="project-thumb">
+          <img src="./logo.png" alt="logo for SmartWheel">
+          <span class="project-badge">Web Project</span>
+        </div>
+        <div class="project-body">
+          <h3>SmartWheel</h3>
+          <p>An Online Marketplace For Buyers and Sellers Of Second-Hand Cars</p>
+          <a href="https://smartwheel.pages.dev/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">Visit Live Website &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ SKILLS ══ -->
+  <section id="skills">
+    <div class="section-label">My Toolkit</div>
+    <h2 class="section-title">Skills</h2>
+    <div class="section-divider"></div>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <h3>Frontend</h3>
+        <div class="tags">
+          <div class="tag">HTML</div>
+          <div class="tag">CSS</div>
+          <div class="tag">JavaScript</div>
+          <div class="tag">XML</div>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Design</h3>
+        <div class="tags">
+          <div class="tag">Figma</div>
+          <div class="tag">UI Design</div>
+          <div class="tag">UX Design</div>
+          <div class="tag">Canva</div>
+          <div class="tag">Blender</div>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Backend &amp; DB</h3>
+        <div class="tags">
+          <div class="tag">MySQL</div>
+          <div class="tag">C#</div>
+          <div class="tag">Java</div>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Tools &amp; Platforms</h3>
+        <div class="tags">
+          <div class="tag">Android Studio</div>
+          <div class="tag">Visual Studio</div>
+          <div class="tag">Git</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ ACHIEVEMENTS ══ -->
+  <section id="achievements">
+    <div class="section-label">Milestones</div>
+    <h2 class="section-title">Achievements</h2>
+    <div class="section-divider"></div>
+
+    <div class="timeline-wrap">
+      <div class="timeline-line"></div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">2026</div>
+          <h3>Code Fest Participant</h3>
+          <p>Participated in STI College Lipa Code Fest, engaging with fellow developers and showcasing technical skills in a competitive environment.</p>
+        </div>
+      </div>
+
+            <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">2024</div>
+          <h3>Java Fundamentals</h3>
+          <p>Java Fundamentals Course Completion.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">2026</div>
+          <h3>Intro to SAP S/4HANA </h3>
+          <p>using Global Bike – Part II</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">2023</div>
+          <h3>Senior High School Graduate — With Honors</h3>
+          <p>Completed Senior High School with honors, demonstrating academic excellence and dedication throughout the program.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">2021</div>
+          <h3>Junior High School Graduate — With Honors</h3>
+          <p>Graduated Junior High School with honors, building a strong academic foundation for future endeavors.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Portfolio — Designed &amp; Built by <em>Reyne Mae Lausa</em>
+  </footer>
+
+  <!-- ══ LIGHTBOX JS ══ -->
+  <script>
+    const lb    = document.getElementById('lightbox');
+    const lbIn  = document.getElementById('lbInner');
+    const lbCap = document.getElementById('lbCaption');
+
+    function openImgLightbox(src, caption) {
+      lbIn.innerHTML = `<img src="${src}" alt="${caption}">`;
+      lbCap.textContent = caption;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openVideoLightbox(src, caption) {
+      lbIn.innerHTML = `
+        <video controls autoplay style="max-width:90vw;max-height:82vh;outline:none;display:block;">
+          <source src="${src}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>`;
+      lbCap.textContent = caption;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e, force) {
+      if (force || (e && e.target === lb)) {
+        const vid = lbIn.querySelector('video');
+        if (vid) vid.pause();
+        lb.classList.remove('open');
+        lbIn.innerHTML = '';
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox(null, true);
+    });
+  </script>
+
+</body>
+</html>
